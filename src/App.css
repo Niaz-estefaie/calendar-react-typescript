@@ -1,0 +1,81 @@
+.background-container {
+  background-image: linear-gradient(#fd8298, #b176fe);
+  width: 100%;
+  height: 100vh;
+}
+
+.calendar-container {
+  width: 55%;
+  margin: auto;
+  position: relative;
+  top: 20px;
+  padding-top: 200px;
+}
+
+.weekdays-container {
+  display: flex;
+  margin: auto;
+  justify-content: space-around;
+  background-color: white;
+}
+
+.weekdays-container .weekday {
+  color: #808080;
+}
+
+.calendar {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.calendar .week {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  width: 100%;
+  height: 100%;
+  background: white;
+}
+
+.calendar .week .date {
+  width: 30px;
+  height: 100%;
+  padding: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+button {
+  background: white;
+  border: none;
+}
+
+.date-picker-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.date-picker-container span {
+  font-size: 20px;
+}
+
+.date-picker-container svg {
+  border-radius: 100px;
+  background: #e8e8e8;
+}
+
+.selected {
+  background-color: #fd6cbb;
+  color: white;
+  border-radius: 5px;
+  filter: drop-shadow(2px 2px 2px #fd6cbb);
+}
