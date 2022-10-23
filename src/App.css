@@ -64,7 +64,14 @@ button {
   border-top-right-radius: 20px;
 }
 
-.date-picker-container span {
+.date-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.date-picker-container div {
   font-size: 20px;
 }
 
