@@ -1,16 +1,20 @@
-import React, { useState, MouseEvent, useEffect } from "react";
-import { Weekday, Day } from "../../types";
+import React, { useState, MouseEvent } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { changeMonth } from "../features/date/month-slice";
 import { changeYear } from "../features/date/years-slice";
 
 export const Calendar: React.FC<{}> = () => {
   const dispatch = useAppDispatch();
+
   const weekdays = useAppSelector((state) => state.week.value);
   const years = useAppSelector((state) => state.year.value);
   const months = useAppSelector((state) => state.month.value);
-  const selectedYear = useAppSelector((state) => state.year.selectedValue);
-  const selectedMonth = useAppSelector((state) => state.month.selectedValue);
+  const selectedYear: { key: number; isLeap: boolean } = useAppSelector(
+    (state) => state.year.selectedValue
+  );
+  const selectedMonth: number = useAppSelector(
+    (state) => state.month.selectedValue
+  );
 
   const [selectedDate, setSelectedDate] = useState<number | null>(
     new Date().getDate()
@@ -18,7 +22,6 @@ export const Calendar: React.FC<{}> = () => {
   const [stringWeekDay, setStringWeekDay] = useState<string | null>(
     new Date().toLocaleString("default", { weekday: "long" }).toLowerCase()
   );
-
   const [currentMonth, setCurrentMonth] = useState<
     { label: string; name: string; key: number; count: number } | undefined
   >(months.find((month) => month.key === selectedMonth));
@@ -31,14 +34,24 @@ export const Calendar: React.FC<{}> = () => {
   };
 
   const onMonthChange = (month: number) => {
+    const index = years.findIndex((year) => year.key === selectedYear.key);
+    let currentYear = {
+      key: selectedYear.key,
+      isLeap: selectedYear.isLeap,
+    };
+
     if (month <= 12 && month >= 1) {
       dispatch(changeMonth(month));
     } else if (month > 12) {
       dispatch(changeMonth(1));
-      dispatch(changeYear(selectedYear + 1));
+      currentYear.key += 1;
+      currentYear.isLeap = years[index + 1].isLeap;
+      dispatch(changeYear(currentYear));
     } else if (month < 1) {
       dispatch(changeMonth(12));
-      dispatch(changeYear(selectedYear - 1));
+      currentYear.key -= 1;
+      currentYear.isLeap = years[index - 1].isLeap;
+      dispatch(changeYear(currentYear));
     }
   };
 
@@ -68,13 +81,27 @@ export const Calendar: React.FC<{}> = () => {
   const generateWeeks = (dateCount: number) => {
     const dates = generateRange(1, dateCount);
 
-    let daysInWeek = 7;
-    let tempArray = [];
-    for (let i = 0; i < dates.length; i += daysInWeek) {
-      tempArray.push(dates.slice(i, i + daysInWeek));
+    let dayCount = 7;
+    let daysInWeek = [];
+    for (let i = 0; i < dates.length; i += dayCount) {
+      daysInWeek.push(dates.slice(i, i + dayCount));
     }
-    return tempArray;
+    return daysInWeek;
   };
+
+  const onYearChange = (e: MouseEvent<HTMLElement>) => {
+    dispatch(changeYear(e.currentTarget.value));
+  };
+
+  const generatedYears = () => (
+    <select name="years" value={selectedYear.key} onChange={() => onYearChange}>
+      {years.map((year, index) => (
+        <option key={index} value={year.key}>
+          {year.key}
+        </option>
+      ))}
+    </select>
+  );
 
   return (
     <div className="calendar-container">
@@ -87,7 +114,7 @@ export const Calendar: React.FC<{}> = () => {
                   previous
                 </button>
                 <div className="date-container">
-                  <div>{selectedYear}</div>
+                  <div>{generatedYears()}</div>
                   <div>
                     <span>{month.label} </span>
                   </div>
@@ -105,7 +132,11 @@ export const Calendar: React.FC<{}> = () => {
                 ))}
               </div>
               <div className="calendar">
-                {generateWeeks(month.count).map((week, index) => (
+                {generateWeeks(
+                  selectedYear.isLeap && selectedMonth === 2
+                    ? month.count + 1
+                    : month.count
+                ).map((week, index) => (
                   <div className="week" key={index}>
                     {week.map((day, i) => (
                       <span key={i}>{generateDates(day, month.key)}</span>
