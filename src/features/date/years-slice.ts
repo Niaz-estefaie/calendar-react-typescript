@@ -1,4 +1,3 @@
-// DUCKS pattern
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const generateYears = (start: number, end: number) =>
@@ -18,30 +17,31 @@ const isLeapYear = (year: number) => {
 const convertYearsToObject: {
   key: number;
   isLeap: boolean;
-  selected: boolean;
 }[] = generateYears(start, end).map((item) => {
   return {
     key: item,
     isLeap: isLeapYear(item),
-    selected: false,
   };
 });
 
 interface YearState {
-  value: {}[];
-  selectedValue: number;
+  value: { key: number; isLeap: boolean }[];
+  selectedValue: { key: number; isLeap: boolean };
 }
 
 const initialState: YearState = {
   value: convertYearsToObject,
-  selectedValue: new Date().getFullYear(),
+  selectedValue: {
+    key: new Date().getFullYear(),
+    isLeap: isLeapYear(new Date().getFullYear()),
+  },
 };
 
 const yearSlice = createSlice({
   name: "year",
   initialState,
   reducers: {
-    changeYear(state, action: PayloadAction<number>) {
+    changeYear(state, action: PayloadAction<{ key: number; isLeap: boolean; }>) {
       state.selectedValue = action.payload;
     },
   },
