@@ -15,7 +15,6 @@ export const Calendar: React.FC<{}> = () => {
   const selectedMonth: number = useAppSelector(
     (state) => state.month.selectedValue
   );
-
   const [selectedDate, setSelectedDate] = useState<number | null>(
     new Date().getDate()
   );
@@ -26,33 +25,8 @@ export const Calendar: React.FC<{}> = () => {
     { label: string; name: string; key: number; count: number } | undefined
   >(months.find((month) => month.key === selectedMonth));
 
-  const onDateChange = (e: MouseEvent<HTMLElement>) => {
-    const dateValue = e.currentTarget.getAttribute("value")?.split("-")[0];
-    const monthValue = e.currentTarget.getAttribute("value")?.split("-")[1];
-    setSelectedDate(parseInt(dateValue ? dateValue : ""));
-    dispatch(changeMonth(parseInt(monthValue ? monthValue : "")));
-  };
-
-  const onMonthChange = (month: number) => {
-    const index = years.findIndex((year) => year.key === selectedYear.key);
-    let currentYear = {
-      key: selectedYear.key,
-      isLeap: selectedYear.isLeap,
-    };
-
-    if (month <= 12 && month >= 1) {
-      dispatch(changeMonth(month));
-    } else if (month > 12) {
-      dispatch(changeMonth(1));
-      currentYear.key += 1;
-      currentYear.isLeap = years[index + 1].isLeap;
-      dispatch(changeYear(currentYear));
-    } else if (month < 1) {
-      dispatch(changeMonth(12));
-      currentYear.key -= 1;
-      currentYear.isLeap = years[index - 1].isLeap;
-      dispatch(changeYear(currentYear));
-    }
+  const generateRange = (start: number, end: number) => {
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   };
 
   const generateDates = (date: number, month: number) => {
@@ -74,27 +48,17 @@ export const Calendar: React.FC<{}> = () => {
     }
   };
 
-  const generateRange = (start: number, end: number) => {
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-  };
-
   const generateWeeks = (dateCount: number) => {
     const dates = generateRange(1, dateCount);
-
-    let dayCount = 7;
-    let daysInWeek = [];
-    for (let i = 0; i < dates.length; i += dayCount) {
-      daysInWeek.push(dates.slice(i, i + dayCount));
-    }
-    return daysInWeek;
-  };
-
-  const onYearChange = (e: MouseEvent<HTMLElement>) => {
-    dispatch(changeYear(e.currentTarget.value));
+    return dates;
   };
 
   const generatedYears = () => (
-    <select name="years" value={selectedYear.key} onChange={() => onYearChange}>
+    <select
+      name="years"
+      value={selectedYear.key}
+      onChange={(e) => onYearChange(e)}
+    >
       {years.map((year, index) => (
         <option key={index} value={year.key}>
           {year.key}
@@ -102,6 +66,49 @@ export const Calendar: React.FC<{}> = () => {
       ))}
     </select>
   );
+
+  const onYearChange = (e: MouseEvent<HTMLElement>) => {
+    dispatch(
+      changeYear({
+        key: parseInt(e.currentTarget.value),
+        isLeap: selectedYear.isLeap,
+      })
+    );
+  };
+
+  const onDateChange = (e: MouseEvent<HTMLElement>) => {
+    const dateValue = e.currentTarget.getAttribute("value")?.split("-")[0];
+    const monthValue = e.currentTarget.getAttribute("value")?.split("-")[1];
+    setSelectedDate(parseInt(dateValue ? dateValue : ""));
+    dispatch(changeMonth(parseInt(monthValue ? monthValue : "")));
+  };
+
+  const onMonthChange = (month: number) => {
+    const index = years.findIndex((year) => year.key === selectedYear.key);
+
+    let currentYear: {
+      key: number;
+      isLeap: boolean;
+    } = {
+      key: selectedYear.key,
+      isLeap: selectedYear.isLeap,
+    };
+
+    if (month <= 12 && month >= 1) {
+      dispatch(changeMonth(month));
+      dispatch(changeYear(currentYear));
+    } else if (month > 12) {
+      currentYear.key += 1;
+      currentYear.isLeap = years[index + 1].isLeap;
+      dispatch(changeMonth(1));
+      dispatch(changeYear(currentYear));
+    } else if (month < 1) {
+      currentYear.key -= 1;
+      currentYear.isLeap = years[index - 1].isLeap;
+      dispatch(changeMonth(12));
+      dispatch(changeYear(currentYear));
+    }
+  };
 
   return (
     <div className="calendar-container">
@@ -131,16 +138,14 @@ export const Calendar: React.FC<{}> = () => {
                   </div>
                 ))}
               </div>
-              <div className="calendar">
+              <div className="divided-calendar">
                 {generateWeeks(
                   selectedYear.isLeap && selectedMonth === 2
                     ? month.count + 1
                     : month.count
                 ).map((week, index) => (
-                  <div className="week" key={index}>
-                    {week.map((day, i) => (
-                      <span key={i}>{generateDates(day, month.key)}</span>
-                    ))}
+                  <div className="individual-date" key={index}>
+                    {generateDates(week, month.key)}
                   </div>
                 ))}
               </div>
