@@ -15,10 +15,10 @@ export const Calendar: React.FC<{}> = () => {
   const selectedMonth: number = useAppSelector(
     (state) => state.month.selectedValue
   );
-  const [selectedDate, setSelectedDate] = useState<number | null>(
+  const [selectedDate, setSelectedDate] = useState<number>(
     new Date().getDate()
   );
-  const [stringWeekDay, setStringWeekDay] = useState<string | null>(
+  const [stringWeekDay, setStringWeekDay] = useState<string>(
     new Date().toLocaleString("default", { weekday: "long" }).toLowerCase()
   );
   const [currentMonth, setCurrentMonth] = useState<
@@ -50,7 +50,11 @@ export const Calendar: React.FC<{}> = () => {
 
   const generateWeeks = (dateCount: number) => {
     const dates = generateRange(1, dateCount);
-    return dates;
+
+    return dates.map((item) => ({
+      date: item,
+      name: getDayOfWeek(selectedYear.key, selectedMonth, item),
+    }));
   };
 
   const generatedYears = () => (
@@ -66,6 +70,14 @@ export const Calendar: React.FC<{}> = () => {
       ))}
     </select>
   );
+
+  const getDayOfWeek = (year: number, month: number, day: number) => {
+    return new Date(year, month, day)
+      .toLocaleString("default", {
+        weekday: "long",
+      })
+      .toLowerCase();
+  };
 
   const onYearChange = (e: MouseEvent<HTMLElement>) => {
     dispatch(
@@ -144,8 +156,8 @@ export const Calendar: React.FC<{}> = () => {
                     ? month.count + 1
                     : month.count
                 ).map((week, index) => (
-                  <div className="individual-date" key={index}>
-                    {generateDates(week, month.key)}
+                  <div className={`individual-date ${week.name}`} key={index}>
+                    {generateDates(week.date, month.key)}
                   </div>
                 ))}
               </div>
