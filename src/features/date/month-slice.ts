@@ -80,7 +80,7 @@ const initialState: MonthState = {
       count: 31,
     },
   ],
-  selectedValue: new Date().getMonth(),
+  selectedValue: new Date().getMonth() + 1,
 };
 
 const monthSlice = createSlice({
