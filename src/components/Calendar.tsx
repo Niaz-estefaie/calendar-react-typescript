@@ -18,12 +18,6 @@ export const Calendar: React.FC<{}> = () => {
   const [selectedDate, setSelectedDate] = useState<number>(
     new Date().getDate()
   );
-  const [stringWeekDay, setStringWeekDay] = useState<string>(
-    new Date().toLocaleString("default", { weekday: "long" }).toLowerCase()
-  );
-  const [currentMonth, setCurrentMonth] = useState<
-    { label: string; name: string; key: number; count: number } | undefined
-  >(months.find((month) => month.key === selectedMonth));
 
   const generateRange = (start: number, end: number) => {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
@@ -79,7 +73,7 @@ export const Calendar: React.FC<{}> = () => {
   );
 
   const getDayOfWeek = (year: number, month: number, day: number) => {
-    return new Date(year, month, day)
+    return new Date(year, month - 1, day)
       .toLocaleString("default", {
         weekday: "long",
       })
