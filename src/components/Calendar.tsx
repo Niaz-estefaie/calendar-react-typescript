@@ -30,26 +30,33 @@ export const Calendar: React.FC<{}> = () => {
   };
 
   const generateDates = (date: number, month: number) => {
-    for (let i = 0; i < 7; i++) {
-      return (
-        <button
-          className={`date ${
-            date === selectedDate &&
-            month === (selectedMonth ? selectedMonth : 0)
-              ? "selected"
-              : ""
-          }`}
-          onClick={onDateChange}
-          value={`${date}-${month}`}
-        >
-          {date}
-        </button>
-      );
+    if (!!date) {
+      for (let i = 0; i < 7; i++) {
+        return (
+          <button
+            className={`date ${
+              date === selectedDate &&
+              month === (selectedMonth ? selectedMonth : 0)
+                ? "selected"
+                : ""
+            }`}
+            onClick={onDateChange}
+            value={`${date}-${month}`}
+          >
+            {date}
+          </button>
+        );
+      }
     }
   };
 
   const generateWeeks = (dateCount: number) => {
     const dates = generateRange(1, dateCount);
+
+    configDayOfWeek(
+      getDayOfWeek(selectedYear.key, selectedMonth, dates[0]),
+      dates
+    );
 
     return dates.map((item) => ({
       date: item,
@@ -122,6 +129,29 @@ export const Calendar: React.FC<{}> = () => {
     }
   };
 
+  const configDayOfWeek = (day: string, array: number[]) => {
+    switch (day) {
+      case "tuesday":
+        array.unshift(0);
+        break;
+      case "wednesday":
+        array.unshift(0, 0);
+        break;
+      case "thursday":
+        array.unshift(0, 0, 0);
+        break;
+      case "friday":
+        array.unshift(0, 0, 0, 0);
+        break;
+      case "saturday":
+        array.unshift(0, 0, 0, 0, 0);
+        break;
+      case "sunday":
+        array.unshift(0, 0, 0, 0, 0, 0);
+        break;
+    }
+  };
+
   return (
     <div className="calendar-container">
       {months.map((month) => {
@@ -144,7 +174,7 @@ export const Calendar: React.FC<{}> = () => {
               </div>
               <div className="weekdays-container">
                 {weekdays.map((day, index) => (
-                  <div className="weekday" key={index}>
+                  <div className={`weekday ${day.value}`} key={index}>
                     {day.value.charAt(0).toUpperCase()}
                     {day.value.slice(1)}
                   </div>
