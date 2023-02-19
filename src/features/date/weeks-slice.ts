@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface WeekState {
-  value: { key: string; value: string }[];
-}
+import { WeekState } from "../../interfaces/app";
 
 const initialState: WeekState = {
   value: [
