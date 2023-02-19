@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+import { YearState } from "../../interfaces/app";
+
 const generateYears = (start: number, end: number) =>
   Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
@@ -24,11 +26,6 @@ const convertYearsToObject: {
   };
 });
 
-interface YearState {
-  value: { key: number; isLeap: boolean }[];
-  selectedValue: { key: number; isLeap: boolean };
-}
-
 const initialState: YearState = {
   value: convertYearsToObject,
   selectedValue: {
@@ -41,7 +38,7 @@ const yearSlice = createSlice({
   name: "year",
   initialState,
   reducers: {
-    changeYear(state, action: PayloadAction<{ key: number; isLeap: boolean; }>) {
+    changeYear(state, action: PayloadAction<{ key: number; isLeap: boolean }>) {
       state.selectedValue = action.payload;
     },
   },
