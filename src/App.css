@@ -1,3 +1,9 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+}
+
 .background-container {
   background-image: linear-gradient(#fd8298, #b176fe);
   width: 100%;
@@ -9,7 +15,7 @@
   margin: auto;
   position: relative;
   top: 20px;
-  padding-top: 200px;
+  padding: 20px;
 }
 
 .weekdays-container {
@@ -78,9 +84,17 @@ button {
   display: grid;
   grid-template-columns: auto auto auto auto auto auto auto;
   background: white;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 .individual-date {
   text-align: center;
   padding: 7px 0;
+}
+
+@media (max-width: 767.98px) {
+  .calendar-container {
+    width: 90%;
+  }
 }
