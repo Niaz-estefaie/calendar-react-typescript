@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { YearState } from "../../interfaces/app";
+import { YearState } from "../../interfaces/calendar";
 
 const generateYears = (start: number, end: number) =>
   Array.from({ length: end - start + 1 }, (_, i) => start + i);

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { MonthState } from "../../interfaces/app";
+import { MonthState } from "../../interfaces/calendar";
 
 const initialState: MonthState = {
   value: [
