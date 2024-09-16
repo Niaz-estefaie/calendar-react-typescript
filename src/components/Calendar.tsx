@@ -2,7 +2,8 @@ import React, { useState, useEffect, MouseEvent, ChangeEvent } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { changeMonth } from "../features/date/month-slice";
 import { changeYear } from "../features/date/years-slice";
-import { RootState, WeekDayName } from "../interfaces/calendar";
+import { RootState, WeekDayName } from "../interfaces/calendarTypes";
+import '../styles/calendar.css';
 
 export const Calendar: React.FC = () => {
   const dispatch = useAppDispatch();

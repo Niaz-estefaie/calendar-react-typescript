@@ -1,0 +1,138 @@
+select {
+    appearance: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    width: 100%;
+    max-width: 150px;
+    transition: border-color 0.3s ease;
+}
+
+select:focus {
+    outline: none;
+    border-color: #7e57c2;
+    box-shadow: 0 0 5px rgba(126, 87, 194, 0.5);
+}
+
+select::after {
+    content: '▼';
+    position: absolute;
+    right: 10px;
+    pointer-events: none;
+}
+
+option {
+    padding: 10px;
+    background: #fff;
+    color: #333;
+}
+
+select:hover {
+    border-color: #b176fe;
+}
+
+.calendar-container {
+    width: 55%;
+    margin: auto;
+    position: relative;
+    top: 20px;
+    padding: 30px 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.weekdays-container {
+    display: flex;
+    margin: auto;
+    justify-content: space-around;
+    background-color: white;
+}
+
+.weekdays-container .weekday {
+    font-size: 18px;
+    font-weight: bold;
+    color: #6c757d;
+}
+
+.calendar {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+button {
+    background: white;
+    border: none;
+}
+
+.date-picker-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+.date-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.date-picker-container div {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.date-picker-container svg {
+    border-radius: 100px;
+    background: #e8e8e8;
+}
+
+.selected {
+    padding: 4px 6px;
+    background-color: #fd6cbb;
+    color: white !important;
+    font-weight: 600 !important;
+    border-radius: 5px;
+    filter: drop-shadow(2px 2px 2px #fd6cbb);
+}
+
+.date {
+    padding: 10px;
+    color: #333;
+    font-weight: lighter;
+}
+
+.divided-calendar {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto auto;
+    background: white;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.individual-date {
+    text-align: center;
+    padding: 7px 0;
+}
+
+.individual-date:hover {
+    cursor: pointer;
+}
+
+@media (max-width: 767.98px) {
+    .calendar-container {
+        width: 90%;
+    }
+}
