@@ -4,18 +4,26 @@ import { changeMonth } from "../features/date/month-slice";
 import { changeYear } from "../features/date/years-slice";
 import { RootState, WeekDayName } from "../interfaces/calendarTypes";
 import '../styles/calendar.css';
+import EventList from './EventList';
+import EventForm from './EventForm';
 
 export const Calendar: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const [isMobileOrTablet, setIsMobileOrTablet] = useState<boolean>(false);
-
   const weekdays = useAppSelector((state: RootState) => state.week.value);
   const years = useAppSelector((state: RootState) => state.year.value);
   const months = useAppSelector((state: RootState) => state.month.value);
   const selectedYear = useAppSelector((state: RootState) => state.year.selectedValue);
   const selectedMonth = useAppSelector((state: RootState) => state.month.selectedValue);
   const [selectedDate, setSelectedDate] = useState<number>(new Date().getDate());
+
+  const [events, setEvents] = useState<{ date: string; title: string }[]>([
+    { date: "2024-09-16", title: "Meeting with Team" },
+    { date: "2024-09-18", title: "Project Deadline" },
+    { date: "2024-09-20", title: "Doctor's Appointment" },
+  ]);
+  const [editingEvent, setEditingEvent] = useState<any | null>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -30,15 +38,26 @@ export const Calendar: React.FC = () => {
     Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
   const generateDates = (date: number, month: number) => {
+    const eventForDay = events.find(
+      (event) =>
+        event.date === `${selectedYear.key}-${String(month).padStart(2, "0")}-${String(date).padStart(2, "0")}`
+    );
+
     return date ? (
-      <button
-        className={`date ${date === selectedDate && month === selectedMonth ? "selected" : ""
-          }`}
-        onClick={onDateChange}
-        value={`${date}-${month}`}
-      >
-        {date}
-      </button>
+      <div className="date-container">
+        <button
+          className={`date ${date === selectedDate && month === selectedMonth ? "selected" : ""}`}
+          onClick={onDateChange}
+          value={`${date}-${month}`}
+        >
+          {date}
+        </button>
+        {eventForDay && (
+          <div className="event">
+            <span>{eventForDay.title}</span>
+          </div>
+        )}
+      </div>
     ) : null;
   };
 
@@ -112,6 +131,28 @@ export const Calendar: React.FC = () => {
     array.unshift(...Array(unshifts[day] || 0).fill(0));
   };
 
+  // Event handling functions
+  const addEvent = (title: string, date: string) => {
+    const newEvent = { id: Date.now(), title, date };
+    setEvents([...events, newEvent]);
+  };
+
+  const editEvent = (id: number) => {
+    const event = events.find(event => event.id === id);
+    if (event) setEditingEvent(event);
+  };
+
+  const updateEvent = (title: string, date: string) => {
+    setEvents(events.map(event =>
+      event.id === editingEvent?.id ? { ...event, title, date } : event
+    ));
+    setEditingEvent(null);
+  };
+
+  const deleteEvent = (id: number) => {
+    setEvents(events.filter(event => event.id !== id));
+  };
+
   return (
     <div className="calendar-container">
       {months.map(
@@ -146,6 +187,18 @@ export const Calendar: React.FC = () => {
             </div>
           )
       )}
+
+      {editingEvent ? (
+        <EventForm
+          initialTitle={editingEvent.title}
+          initialDate={editingEvent.date}
+          onSave={updateEvent}
+        />
+      ) : (
+        <EventForm onSave={addEvent} />
+      )}
     </div>
   );
 };
+
+export default Calendar;
