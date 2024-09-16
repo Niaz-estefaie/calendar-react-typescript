@@ -100,7 +100,8 @@ button {
 }
 
 .selected {
-    padding: 4px 6px;
+    height: 40px;
+    width: 40px;
     background-color: #fd6cbb;
     color: white !important;
     font-weight: 600 !important;
@@ -130,6 +131,31 @@ button {
 .individual-date:hover {
     cursor: pointer;
 }
+
+
+.date-container {
+    position: relative;
+}
+
+.event {
+    background-color: #ffcc00;
+    padding: 2px;
+    font-size: 12px;
+    border-radius: 4px;
+    margin-top: 2px;
+    text-align: center;
+}
+
+.date-container button {
+    display: block;
+    width: 100%;
+}
+
+.event span {
+    font-size: 10px;
+    display: block;
+}
+
 
 @media (max-width: 767.98px) {
     .calendar-container {
