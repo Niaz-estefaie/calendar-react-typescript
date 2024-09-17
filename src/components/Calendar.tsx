@@ -4,8 +4,8 @@ import { changeMonth } from "../features/date/month-slice";
 import { changeYear } from "../features/date/years-slice";
 import { RootState, WeekDayName } from "../interfaces/calendarTypes";
 import '../styles/calendar.css';
-import EventList from './EventList';
-import EventForm from './EventForm';
+// import EventList from './EventList';
+// import EventForm from './EventForm';
 
 export const Calendar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -20,6 +20,7 @@ export const Calendar: React.FC = () => {
 
   const [events, setEvents] = useState<{ date: string; title: string }[]>([
     { date: "2024-09-16", title: "Meeting with Team" },
+    { date: "2024-09-16", title: "Team up" },
     { date: "2024-09-18", title: "Project Deadline" },
     { date: "2024-09-20", title: "Doctor's Appointment" },
   ]);
@@ -38,10 +39,12 @@ export const Calendar: React.FC = () => {
     Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
   const generateDates = (date: number, month: number) => {
-    const eventForDay = events.find(
+    const eventForDay = events.filter(
       (event) =>
         event.date === `${selectedYear.key}-${String(month).padStart(2, "0")}-${String(date).padStart(2, "0")}`
     );
+
+    console.log(eventForDay);
 
     return date ? (
       <div className="date-container">
@@ -52,11 +55,15 @@ export const Calendar: React.FC = () => {
         >
           {date}
         </button>
-        {eventForDay && (
-          <div className="event">
-            <span>{eventForDay.title}</span>
-          </div>
-        )}
+        <ul>
+          {eventForDay.map(event => {
+            return (
+              <li className="event">
+                <span>{event.title}</span>
+              </li>
+            )
+          })}
+        </ul>
       </div>
     ) : null;
   };
@@ -131,7 +138,6 @@ export const Calendar: React.FC = () => {
     array.unshift(...Array(unshifts[day] || 0).fill(0));
   };
 
-  // Event handling functions
   const addEvent = (title: string, date: string) => {
     const newEvent = { id: Date.now(), title, date };
     setEvents([...events, newEvent]);
@@ -153,6 +159,16 @@ export const Calendar: React.FC = () => {
     setEvents(events.filter(event => event.id !== id));
   };
 
+  const renderWeekday = (day: { key: string; value: string }, index: number) => {
+    const dayName = isMobileOrTablet ? day.key : day.value;
+    return (
+      <div className={`weekday ${day.value}`} key={index}>
+        {dayName.charAt(0).toUpperCase() + dayName.slice(1)}
+      </div>
+    );
+  };
+
+
   return (
     <div className="calendar-container">
       {months.map(
@@ -168,12 +184,7 @@ export const Calendar: React.FC = () => {
                 <button onClick={() => onMonthChange(selectedMonth + 1)}>Next</button>
               </div>
               <div className="weekdays-container">
-                {weekdays.map((day, index) => (
-                  <div className={`weekday ${day.value}`} key={index}>
-                    {(isMobileOrTablet ? day.key : day.value).charAt(0).toUpperCase()}
-                    {(isMobileOrTablet ? day.key : day.value).slice(1)}
-                  </div>
-                ))}
+                {weekdays.map((day, index) => renderWeekday(day, index))}
               </div>
               <div className="divided-calendar">
                 {generateWeeks(
@@ -188,7 +199,7 @@ export const Calendar: React.FC = () => {
           )
       )}
 
-      {editingEvent ? (
+      {/* {editingEvent ? (
         <EventForm
           initialTitle={editingEvent.title}
           initialDate={editingEvent.date}
@@ -196,7 +207,7 @@ export const Calendar: React.FC = () => {
         />
       ) : (
         <EventForm onSave={addEvent} />
-      )}
+      )} */}
     </div>
   );
 };
