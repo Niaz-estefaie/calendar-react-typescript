@@ -20,6 +20,7 @@ const EventForm: React.FC<EventFormProps> = ({ initialTitle = '', initialDate = 
       />
       <input
         type="date"
+        placeholder="Date"
         value={date}
         onChange={e => setDate(e.target.value)}
       />
